@@ -9,33 +9,94 @@ class TimerScreen extends StatelessWidget {
     final timerProvider = Provider.of<TimerProvider>(context);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Timer App'),
+        title: Text(
+          'Ứng dụng Đếm Giờ',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        backgroundColor: Colors.blueAccent,
+        elevation: 4,
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TimerInput(),
-            SizedBox(height: 20),
             Text(
-              timerProvider.timeLeft,
-              style: TextStyle(fontSize: 48),
+              'Thiết lập thời gian',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
             SizedBox(height: 20),
+            TimerInput(),
+            SizedBox(height: 40),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    blurRadius: 8,
+                    offset: Offset(2, 2),
+                  ),
+                ],
+              ),
+              padding: EdgeInsets.all(20),
+              child: Text(
+                timerProvider.timeLeft,
+                style: TextStyle(
+                  fontSize: 60,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent,
+                ),
+              ),
+            ),
+            SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
+                ElevatedButton.icon(
                   onPressed: timerProvider.isRunning
                       ? timerProvider.pauseTimer
                       : timerProvider.startTimer,
-                  child: Text(timerProvider.isRunning ? 'Tạm dừng' : 'Bắt đầu'),
+                  icon: Icon(
+                    timerProvider.isRunning ? Icons.pause : Icons.play_arrow,
+                    color: Colors.white,
+                  ),
+                  label: Text(
+                    timerProvider.isRunning ? 'Tạm dừng' : 'Bắt đầu',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    backgroundColor: Colors.greenAccent,
+                    textStyle: TextStyle(fontSize: 18),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
                 ),
-                SizedBox(width: 10),
-                ElevatedButton(
+                SizedBox(width: 20),
+                ElevatedButton.icon(
                   onPressed: timerProvider.resetTimer,
-                  child: Text('Đặt lại'),
+                  icon: Icon(Icons.restore, color: Colors.white),
+                  label: Text(
+                    'Đặt lại',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    backgroundColor: Colors.redAccent,
+                    textStyle: TextStyle(fontSize: 18),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
                 ),
               ],
             ),
