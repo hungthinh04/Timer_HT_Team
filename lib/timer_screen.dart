@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hengio/timer_input.dart';
 import 'package:hengio/timer_provider.dart';
+import 'package:hengio/timer_input.dart';
 import 'package:provider/provider.dart';
 
 class TimerScreen extends StatelessWidget {
@@ -9,26 +9,33 @@ class TimerScreen extends StatelessWidget {
     final timerProvider = Provider.of<TimerProvider>(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          'Ứng dụng Đếm Giờ',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          'Timer',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        backgroundColor: Colors.blueAccent,
-        elevation: 4,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      extendBodyBehindAppBar: true,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment(0.0, -0.6),
+            radius: 1.0,
+            colors: [Color(0xff1d2671), Color(0xffc33764)],
+          ),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 80.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Thiết lập thời gian',
+              'Set Timer',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
             SizedBox(height: 20),
@@ -36,13 +43,13 @@ class TimerScreen extends StatelessWidget {
             SizedBox(height: 40),
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey[200],
+                color: Colors.black54,
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    blurRadius: 8,
-                    offset: Offset(2, 2),
+                    color: Colors.black38,
+                    blurRadius: 15,
+                    offset: Offset(0, 4),
                   ),
                 ],
               ),
@@ -52,7 +59,8 @@ class TimerScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 60,
                   fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent,
+                  color: Colors.white,
+                  letterSpacing: 2,
                 ),
               ),
             ),
@@ -69,16 +77,16 @@ class TimerScreen extends StatelessWidget {
                     color: Colors.white,
                   ),
                   label: Text(
-                    timerProvider.isRunning ? 'Tạm dừng' : 'Bắt đầu',
+                    timerProvider.isRunning ? 'Pause' : 'Start',
                     style: TextStyle(color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                    backgroundColor: Colors.greenAccent,
-                    textStyle: TextStyle(fontSize: 18),
+                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    backgroundColor: Colors.blueAccent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
+                    elevation: 10,
                   ),
                 ),
                 SizedBox(width: 20),
@@ -86,16 +94,16 @@ class TimerScreen extends StatelessWidget {
                   onPressed: timerProvider.resetTimer,
                   icon: Icon(Icons.restore, color: Colors.white),
                   label: Text(
-                    'Đặt lại',
+                    'Reset',
                     style: TextStyle(color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                     backgroundColor: Colors.redAccent,
-                    textStyle: TextStyle(fontSize: 18),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
+                    elevation: 10,
                   ),
                 ),
               ],

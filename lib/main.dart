@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
       title: 'Timer App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'Arial',
       ),
       home: TimerScreen(),
     );
