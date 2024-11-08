@@ -51,7 +51,7 @@ class TimerInput extends StatelessWidget {
             textAlign: TextAlign.center,
             enabled: !isDisabled,
             inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly, // Allow only digits
+              FilteringTextInputFormatter.digitsOnly,// chi  cho phep nhap so , khong nhap . duoc
             ],
             decoration: InputDecoration(
               border: InputBorder.none,

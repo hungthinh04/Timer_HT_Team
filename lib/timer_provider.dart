@@ -24,12 +24,10 @@ class TimerProvider extends ChangeNotifier {
   void startTimer() {
     if (_isRunning) return;
 
-    // Calculate total seconds only if the user has entered any time value
     _totalSeconds = (int.tryParse(hoursController.text) ?? 0) * 3600 +
                     (int.tryParse(minutesController.text) ?? 0) * 60 +
                     (int.tryParse(secondsController.text) ?? 0);
 
-    // Only start the timer if _totalSeconds is greater than zero
     if (_totalSeconds > 0) {
       _isRunning = true;
       _timer = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -40,7 +38,7 @@ class TimerProvider extends ChangeNotifier {
           _timer?.cancel();
           _isRunning = false;
           notifyListeners();
-          playAlarm(); // Play sound only when the timer finishes
+          playAlarm();
         }
       });
     }
