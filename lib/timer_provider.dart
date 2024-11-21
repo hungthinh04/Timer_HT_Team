@@ -7,6 +7,9 @@ class TimerProvider extends ChangeNotifier {
   Timer? _timer;
   int _totalSeconds = 0;
   bool _isRunning = false;
+  bool _isPaused = false; // Trạng thái tạm dừng
+  bool _isReset = false; // Trạng thái reset
+  bool _isFirstReset = true; // Track if this is the first reset
 
   final TextEditingController hoursController = TextEditingController();
   final TextEditingController minutesController = TextEditingController();
@@ -20,46 +23,84 @@ class TimerProvider extends ChangeNotifier {
   }
 
   bool get isRunning => _isRunning;
+  bool get isPaused => _isPaused;
+
+  // Getter for reset state
+  bool get isReset => _isReset;
+
+  // Track whether input should be enabled or not
+  bool get canEditInput => _isFirstReset || _isReset;
+
+  // Chỉ giữ lại một getter canStart
+  bool get canStart {
+    return (int.tryParse(hoursController.text) ?? 0) > 0 ||
+        (int.tryParse(minutesController.text) ?? 0) > 0 ||
+        (int.tryParse(secondsController.text) ?? 0) > 0;
+  }
 
   void startTimer() {
-    if (_isRunning) return;
-
-    _totalSeconds = (int.tryParse(hoursController.text) ?? 0) * 3600 +
-                    (int.tryParse(minutesController.text) ?? 0) * 60 +
-                    (int.tryParse(secondsController.text) ?? 0);
-
-    if (_totalSeconds > 0) {
+    if (_isRunning) return; // Nếu đã chạy, bỏ qua
+    if (_isPaused) {
+      _isPaused = false;
       _isRunning = true;
       _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-        if (_totalSeconds > 0) {
-          _totalSeconds--;
-          notifyListeners();
-        } else {
-          _timer?.cancel();
-          _isRunning = false;
-          notifyListeners();
-          playAlarm();
-        }
+        _tick();
       });
+    } else {
+      _totalSeconds = (int.tryParse(hoursController.text) ?? 0) * 3600 +
+          (int.tryParse(minutesController.text) ?? 0) * 60 +
+          (int.tryParse(secondsController.text) ?? 0);
+      if (_totalSeconds > 0) {
+        _isRunning = true;
+        _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+          _tick();
+        });
+      }
+    }
+    _isReset = false; // Reset state to false once the timer starts
+    _isFirstReset = false; // Disable input after first reset
+    notifyListeners();
+  }
+
+  void _tick() {
+    if (_totalSeconds > 0) {
+      _totalSeconds--;
+      notifyListeners();
+    } else {
+      _timer?.cancel();
+      _isRunning = false;
+      notifyListeners();
+      playAlarm();
     }
   }
 
   void pauseTimer() {
-    _timer?.cancel();
-    _isRunning = false;
+    if (_isRunning) {
+      _timer?.cancel();
+      _isRunning = false;
+      _isPaused = true;
+      notifyListeners();
+    }
+  }
+
+  void onInputChanged() {
     notifyListeners();
   }
 
   void resetTimer() {
-    _timer?.cancel();
-    _isRunning = false;
-    _totalSeconds = 0;
+    if (!_isRunning) {
+      _timer?.cancel();
+      _isRunning = false;
+      _isPaused = false;
+      _totalSeconds = 0;
 
-    hoursController.clear();
-    minutesController.clear();
-    secondsController.clear();
+      hoursController.clear();
+      minutesController.clear();
+      secondsController.clear();
 
-    notifyListeners();
+      _isReset = true; // Set reset state to true when the timer is reset
+      notifyListeners();
+    }
   }
 
   @override
@@ -77,3 +118,4 @@ class TimerProvider extends ChangeNotifier {
     await player.resume();
   }
 }
+

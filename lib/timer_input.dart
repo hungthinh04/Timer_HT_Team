@@ -11,64 +11,72 @@ class TimerInput extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        buildTimeInput('Hours', timerProvider.hoursController, timerProvider.isRunning, _hoursInputFormatter),
+        buildTimeInput('Hours', timerProvider.hoursController, timerProvider.isRunning, _hoursInputFormatter, timerProvider),
         SizedBox(width: 16),
-        buildTimeInput('Minutes', timerProvider.minutesController, timerProvider.isRunning, _minutesAndSecondsInputFormatter),
+        buildTimeInput('Minutes', timerProvider.minutesController, timerProvider.isRunning, _minutesAndSecondsInputFormatter, timerProvider),
         SizedBox(width: 16),
-        buildTimeInput('Seconds', timerProvider.secondsController, timerProvider.isRunning, _minutesAndSecondsInputFormatter),
+        buildTimeInput('Seconds', timerProvider.secondsController, timerProvider.isRunning, _minutesAndSecondsInputFormatter, timerProvider),
       ],
     );
   }
 
-  Widget buildTimeInput(String label, TextEditingController controller, bool isDisabled, List<TextInputFormatter> inputFormatters) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.white70,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
+  Widget buildTimeInput(
+  String label,
+  TextEditingController controller,
+  bool isDisabled,
+  List<TextInputFormatter> inputFormatters,
+  TimerProvider timerProvider,
+) {
+  return Column(
+    children: [
+      Text(
+        label,
+        style: TextStyle(
+          color: Colors.white70,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
         ),
-        SizedBox(height: 8),
-        Container(
-          width: 70,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 8,
-                offset: Offset(2, 2),
-              ),
-            ],
-          ),
-          child: TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-            textAlign: TextAlign.center,
-            enabled: !isDisabled,
-            inputFormatters: inputFormatters,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.all(8),
+      ),
+      SizedBox(height: 8),
+      Container(
+        width: 70,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 8,
+              offset: Offset(2, 2),
             ),
-            style: TextStyle(color: Colors.white),
-          ),
+          ],
         ),
-      ],
-    );
-  }
+        child: TextField(
+          controller: controller, 
+          keyboardType: TextInputType.number,
+          textAlign: TextAlign.center,
+          enabled: !isDisabled && timerProvider.canEditInput, // Enable if canEditInput is true
+          inputFormatters: inputFormatters,
+          onChanged: (_) => timerProvider.onInputChanged(),
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.all(8),
+          ),
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    ],
+  );
+}
 
-  // Định dạng nhập cho Hours (tối đa 2 chữ số, không giới hạn giá trị)
+
+  // Định dạng nhập cho Hours
   List<TextInputFormatter> get _hoursInputFormatter => [
         FilteringTextInputFormatter.digitsOnly,
         LengthLimitingTextInputFormatter(3),
       ];
 
-  // Định dạng nhập cho Minutes và Seconds (hàng chục <= 5, hàng đơn vị không giới hạn)
+  // Định dạng nhập cho Minutes và Seconds
   List<TextInputFormatter> get _minutesAndSecondsInputFormatter => [
         FilteringTextInputFormatter.digitsOnly,
         LengthLimitingTextInputFormatter(2),
